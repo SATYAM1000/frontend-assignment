@@ -8,7 +8,7 @@ import { useAppContext } from "../store/Context";
 import Error from "./Error";
 import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-
+import ClipLoader from "react-spinners";
 const JoinRoomForm = ({ setOpenJoinForm }) => {
 	const navigate = useNavigate();
 	const { socket, roomDetails, setRoomDetails, joinStatus, setJoinStatus } =
@@ -18,6 +18,7 @@ const JoinRoomForm = ({ setOpenJoinForm }) => {
 	const [currentRoomName, setCurrentRoomName] = useState("");
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
+	const [loading,setLoading]=useState(false);
 	useEffect(() => {
 		if (roomDetails) {
 			navigate(`/room/${roomDetails}`);
@@ -27,9 +28,11 @@ const JoinRoomForm = ({ setOpenJoinForm }) => {
 	const joinRoomHandler = async (e) => {
 		setError("");
 		e.preventDefault();
+		setLoading(true);
 
 		if (currentRoomName.length < 4) {
 			setError("Name can only be greater than 3 letters");
+			setLoading(false);
 			return;
 		}
 
@@ -40,6 +43,7 @@ const JoinRoomForm = ({ setOpenJoinForm }) => {
 					resolve(ack);
 				});
 			});
+			setLoading(false);
 
 			setJoinStatus(ack.success);
 			setRoomDetails(currentRoomName);
@@ -48,6 +52,7 @@ const JoinRoomForm = ({ setOpenJoinForm }) => {
 				navigate(`/room/${currentRoomName}`);
 			}
 		} catch (error) {
+			setLoading(false)
 			console.log("Error:", error);
 		}
 	};
@@ -69,8 +74,8 @@ const JoinRoomForm = ({ setOpenJoinForm }) => {
 				/>
 				{error && <Error message={error} />}
 				<button type="submit">
-					{isPending ? (
-						<BeatLoader size={15} />
+					{loading ? (
+						<ClipLoader size={15} />
 					) : (
 						<>
 							Join room <ArrowRight />
