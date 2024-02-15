@@ -9,7 +9,7 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
 	const socket = useMemo(() => {
 		try {
-			return io(SOCKET_URL);
+			return io("https://chat-backend-quhk.onrender.com/");
 		} catch (error) {
 			console.error("Error connecting to socket:", error);
 			return null;
